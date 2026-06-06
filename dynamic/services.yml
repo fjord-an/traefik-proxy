@@ -72,6 +72,12 @@ http:
       entryPoints:
       - websecure
       tls: {}
+    onboarding:
+      rule: Host(`onboarding.pspace`)
+      service: onboarding
+      entryPoints:
+      - websecure
+      tls: {}
   services:
     yendorcats:
       loadBalancer:
@@ -120,6 +126,10 @@ http:
       loadBalancer:
         servers:
         - url: http://192.168.0.250:3000
+    onboarding:
+      loadBalancer:
+        servers:
+        - url: http://localhost:8082
   serversTransports:
     insecure:
       insecureSkipVerify: true

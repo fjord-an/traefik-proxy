@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadCertificateFileName</key>
+            <string>paceyspace-ca.crt</string>
+            <key>PayloadContent</key>
+            <data>
+LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZ3VENDQTZtZ0F3SUJBZ0lVVnZJWHVNV3UvTExBUExrcWxCNXl4RVZSSGlrd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2NERUxNQWtHQTFVRUJoTUNRVlV4RXpBUkJnTlZCQWdNQ2xGMVpXVnVjMnhoYm1ReEVUQVBCZ05WQkFjTQpDRUp5YVhOaVlXNWxNUmd3RmdZRFZRUUtEQTlRWVdObGVWTndZV05sSUV4aFluTXhIekFkQmdOVkJBTU1GbEJoClkyVjVVM0JoWTJVZ1NXNTBaWEp1WVd3Z1EwRXdIaGNOTWpZd05qQTFNak14T0RBMVdoY05Nell3TmpBeU1qTXgKT0RBMVdqQndNUXN3Q1FZRFZRUUdFd0pCVlRFVE1CRUdBMVVFQ0F3S1VYVmxaVzV6YkdGdVpERVJNQThHQTFVRQpCd3dJUW5KcGMySmhibVV4R0RBV0JnTlZCQW9NRDFCaFkyVjVVM0JoWTJVZ1RHRmljekVmTUIwR0ExVUVBd3dXClVHRmpaWGxUY0dGalpTQkpiblJsY201aGJDQkRRVENDQWlJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dJUEFEQ0MKQWdvQ2dnSUJBTHpkMVlSdnNJQjJOUnljVWhtcW9oSjFlYy9xd0NPL2pqempNWEEySzlrMXdaamxWZUNCZ2toNwpyeXkwY29zei92OFpUYmoyL1IrZ0FaY3Nld0xuUHJWZHJPQ2U5alB4T2FiTnJ0VTdNUlNDR25uVzV4cEtzSlNDCjFVNk5ORG1vM3JEZ0t4Zm44Rk1IaG14OWk1WVVSNjgyNnphUGlvS2xZRTZsR0VVMzhUR1JlYmk5MGs5S29GdE8KaUQ5NTVlVVVSTVlYVmJiU2xpWXNFWkZzOE12VWozR3NiUkp0L3pZMklQNWRKTWNsdWFhV1YyWjNCM1M3Q1djKwpYOXVpcytrRzdHT2VIVWtmWUZPeHBoOXc4STZFenpmVjBLVnAzTVV2RCt0Mll6QVpoYTNiMmFrUXpGT0ZDMGNxCnpTb3l2M1haNFRNS0FQK0tzZVUvK2cyQTFKMGVkOXlTR0tqTHhjUU9vbTZKcWlHUDNUT205NnZrWm93dmNZdzcKVk9SWmk2RGJVWE8rNVNkYytoOGJjbDFKYlBpSDRQbDQrWlJsTzN3WjU5aDZaWTVJRVlPWHFGVjZJMTN3d0tPVAphRHNpMXNCc0hhaTBqL2dGUjgrT2lRM0c3VkE2cW9FWTllUTRJM1R6cy9kaVF0Nk9ZSUJNa2ZXTlp2V1dTMWRICnBFTkp0cktETjNGaTQ2Snk4Z1BFMHl0Z3d3MEJOTEdvWVJDZDNhb2NjZmx5cXpEZjBwaWJMSzB0VGJYblNBZ1YKK3FlZm53aG0yRWVUaVA2ajBvQldyUkNFSEpIdHZoWXM5MUJxMGV0ME9mWnE0dGtxWmJTLzJ6NTRWcVh0TlZWSwpXeGx0MG41YWl2VFo0aWRnYnBVNUpTNS80WkJCeVBtRFhZWVpSUkRvcGJYSXRCaW9hbzBEQWdNQkFBR2pVekJSCk1CMEdBMVVkRGdRV0JCU1p5K1NXaitpeXVzU1dIdm9ybi96RmhoTVdzakFmQmdOVkhTTUVHREFXZ0JTWnkrU1cKaitpeXVzU1dIdm9ybi96RmhoTVdzakFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQTBHQ1NxR1NJYjNEUUVCQ3dVQQpBNElDQVFDbU03SllIMmhycjdHUk9mUUF1a0U3d0tUT2RyV2dybEpkUHlIUmU5dFJjVDR4UUJDbmMwNkVhK1JRCk5GankydmF2aVRYU2lrVFcvNXE1eDFmenM4NFFtNmI5NUxqbmpDU25EN3FOai9ycklyUmtYQm9GV2F1aHRYRjEKQmp3bHdkeWNEaDRyaUY4VXlzZERBbUlVSXlSQllEVjBFUzJIR3l3UGFaWndlNk9RbW9Yd1duL0NTamhxTXBXdwpnTU53V0x4dGR4bHIyd2h2K2NqL0pwREpWTVZ2ZDQvTVp4eW0wRFRIK05TQUprZWM0eWVlVndJNnlyRHVWVUlFCkNKUURXMFRocXdHejVyeHo2Q3h3Znh3aEZIWUkzS1d0Y0hoRGhEeDlmcFBqNmxRb2xQTUh3bVcySXFZbUo5dU4KTGZxbUN1U29NNnA0Q0x3c240TFJNUlJWeHBEd3NIV0NMbVZ3eS9wZTdQUkhSSVNSYWZzdXJnME5QTFZLZzIyOApiUW5ha2JqMTNBSVBuTERSaTZtbFVOVHVUZi83TWptdmgxRVE5Vi9vUG1PR0htZEdoWHhvWXhJaFFnNGE5OVpPCmRGcVhEYnZ5M3hMOGk2UFJzaXRPZEpodGhzNkdnMUlSR21GTVNHb3RTZ1VPNW90UmRXWWRHUWd3cmswUHRwd3AKd1JySWxoemRSd0ZIMjlUcEczZEc2cndxL2tzZWlGRkkyUEJtWTA2WDhnY1VSVkJxM3R1VXF6bnN2Tk84TnBPZQpaR0JGc3JKVktLNnJaYThwUDU5WTJnVUFMeUp0NDlPdU9uOUMxR2RBVzFOTFpwM0xMcU9XODdRZ05ic25qQ0FaCmM2ZmpVUWNGcnl5bitvVE5rc0VUOFJLbGx3eWRiOC9POG04QWJrSTRmS3ArRDNnWHNnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+            </data>
+            <key>PayloadDescription</key>
+            <string>PaceySpace Workspace Certificate</string>
+            <key>PayloadDisplayName</key>
+            <string>PaceySpace Workspace Certificate</string>
+            <key>PayloadIdentifier</key>
+            <string>com.paceyspace.certificate.ca</string>
+            <key>PayloadType</key>
+            <string>com.apple.security.root</string>
+            <key>PayloadUUID</key>
+            <string>550E8400-E29B-41D4-A716-446655440000</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>Installs the PaceySpace Workspace Certificate to access internal services securely.</string>
+    <key>PayloadDisplayName</key>
+    <string>PaceySpace Workspace Setup</string>
+    <key>PayloadIdentifier</key>
+    <string>com.paceyspace.workspace</string>
+    <key>PayloadOrganization</key>
+    <string>PaceySpace</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>6E6C8E0A-1E63-4B9E-9E3A-8F4D2C5B7A1E</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>

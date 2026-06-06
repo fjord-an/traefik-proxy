@@ -17,3 +17,15 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+  onboarding:
+    image: python:3-alpine
+    container_name: onboarding
+    restart: unless-stopped
+    network_mode: host
+    working_dir: /usr/share/nginx/html
+    command: python -m http.server 8082
+    volumes:
+      - /etc/traefik/onboarding:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=false"

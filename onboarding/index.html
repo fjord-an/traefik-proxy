@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to PaceySpace — Workspace Setup</title>
+    <link rel="stylesheet" href="/assets/onboarding.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <circle cx="16" cy="16" r="6" fill="currentColor"/>
+                </svg>
+                <span>PaceySpace</span>
+            </div>
+            <div class="header-status">
+                <span class="status-dot online"></span>
+                <span class="status-text">Workspace Portal</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1>Welcome to the team</h1>
+                <p class="subtitle">This page will set up your device to access our internal tools securely. It takes about 2 minutes.</p>
+                <div class="progress-bar">
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <span>Install Certificate</span>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-number">2</div>
+                        <span>Test Connection</span>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <span>Access Services</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 1: Certificate Installation -->
+            <section class="card" id="step1">
+                <div class="card-header">
+                    <div class="step-badge">Step 1</div>
+                    <h2>Install Workspace Certificate</h2>
+                    <p class="card-description">Our internal services use a private security certificate. Install it once to access all services without warnings.</p>
+                </div>
+
+                <div class="os-detection" id="osDetection">
+                    <div class="detected-os">
+                        <div class="os-icon" id="osIcon">💻</div>
+                        <div class="os-info">
+                            <div class="os-name" id="osName">Detecting your system...</div>
+                            <div class="os-version" id="osVersion">Please wait</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- macOS -->
+                <div class="install-method" id="macosMethod" style="display:none;">
+                    <div class="method-header">
+                        <span class="method-badge recommended">Recommended</span>
+                        <h3>Install Configuration Profile</h3>
+                    </div>
+                    <p>This is the same method used by corporate MDM systems. Your system will recognize it as a legitimate workspace configuration.</p>
+                    <div class="install-steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div class="step-content">
+                                <p>Click the button below to download the workspace profile</p>
+                                <a href="/assets/paceyspace-ca.mobileconfig" class="btn btn-primary" download="paceyspace-workspace.mobileconfig">
+                                    <span>📥 Download Workspace Profile</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div class="step-content">
+                                <p>Open <strong>System Settings</strong> → <strong>General</strong> → <strong>Profiles</strong></p>
+                                <div class="screenshot-hint">Look for "PaceySpace Workspace Certificate"</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <div class="step-content">
+                                <p>Click <strong>Install</strong> and enter your admin password when prompted</p>
+                                <div class="screenshot-hint">This is standard for all workspace certificates</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">4</div>
+                            <div class="step-content">
+                                <p>Verify it shows <strong>Verified</strong> ✅</p>
+                                <div class="screenshot-hint">You're all set!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alternative-method">
+                        <p>Prefer command line? <a href="#" onclick="toggleAlternative('macosAlt')">Show terminal instructions</a></p>
+                        <div id="macosAlt" class="code-block" style="display:none;">
+                            <pre><code>sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ~/Downloads/paceyspace-ca.crt</code></pre>
+                            <button class="btn btn-small" onclick="copyToClipboard(this)">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- iOS -->
+                <div class="install-method" id="iosMethod" style="display:none;">
+                    <div class="method-header">
+                        <span class="method-badge recommended">Recommended</span>
+                        <h3>Install Configuration Profile</h3>
+                    </div>
+                    <div class="install-steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div class="step-content">
+                                <p>Tap the button below to download the profile</p>
+                                <a href="/assets/paceyspace-ca.mobileconfig" class="btn btn-primary" download="paceyspace-workspace.mobileconfig">
+                                    <span>📥 Download Workspace Profile</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div class="step-content">
+                                <p>Go to <strong>Settings</strong> → tap <strong>Profile Downloaded</strong> at the top</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <div class="step-content">
+                                <p>Tap <strong>Install</strong> and enter your passcode</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">4</div>
+                            <div class="step-content">
+                                <p>Tap <strong>Install</strong> again on the warning, then <strong>Done</strong></p>
+                                <div class="warning-box">
+                                    <strong>⚠️ Important:</strong> After installing, go to Settings → General → About → Certificate Trust Settings and toggle "PaceySpace Workspace Certificate" to ON.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Windows -->
+                <div class="install-method" id="windowsMethod" style="display:none;">
+                    <div class="method-header">
+                        <span class="method-badge recommended">Recommended</span>
+                        <h3>Run PowerShell Setup</h3>
+                    </div>
+                    <p>One command. Copy, paste into PowerShell (as Administrator), and you're done.</p>
+                    <div class="code-block">
+                        <pre><code>irm https://onboarding.pspace/assets/install-windows.ps1 | iex</code></pre>
+                        <button class="btn btn-small" onclick="copyToClipboard(this)">Copy</button>
+                    </div>
+                    <div class="install-steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div class="step-content">
+                                <p>Press <kbd>Win</kbd> + <kbd>X</kbd>, then click <strong>Windows PowerShell (Admin)</strong></p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div class="step-content">
+                                <p>Copy the command above and paste it into PowerShell</p>
+                                <div class="screenshot-hint">Right-click to paste in PowerShell</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <div class="step-content">
+                                <p>Press <kbd>Enter</kbd>. You may see a security prompt — type <code>Y</code> and press Enter</p>
+                                <div class="screenshot-hint">The script will show "PaceySpace certificate installed successfully"</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alternative-method">
+                        <p>Prefer manual install? <a href="/assets/paceyspace-ca.crt" download>Download the certificate</a> and:</p>
+                        <ol>
+                            <li>Double-click the downloaded file</li>
+                            <li>Click "Install Certificate"</li>
+                            <li>Select "Local Machine" → "Next"</li>
+                            <li>Select "Place all certificates in the following store"</li>
+                            <li>Click "Browse" → select "Trusted Root Certification Authorities"</li>
+                            <li>Click "Next" → "Finish"</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Linux -->
+                <div class="install-method" id="linuxMethod" style="display:none;">
+                    <div class="method-header">
+                        <span class="method-badge recommended">Recommended</span>
+                        <h3>Run Terminal Setup</h3>
+                    </div>
+                    <p>One command in your terminal. Works on Ubuntu, Debian, Fedora, and most distributions.</p>
+                    <div class="code-block">
+                        <pre><code>curl -fsSL https://onboarding.pspace/assets/install-linux.sh | sudo bash</code></pre>
+                        <button class="btn btn-small" onclick="copyToClipboard(this)">Copy</button>
+                    </div>
+                    <div class="install-steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div class="step-content">
+                                <p>Open your terminal (Ctrl+Alt+T on Ubuntu)</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div class="step-content">
+                                <p>Copy the command above and paste it into the terminal</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <div class="step-content">
+                                <p>Enter your password when prompted. The script will confirm installation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alternative-method">
+                        <p>Prefer manual install? <a href="/assets/paceyspace-ca.crt" download>Download the certificate</a> and run:</p>
+                        <div class="code-block">
+                            <pre><code>sudo cp ~/Downloads/paceyspace-ca.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates</code></pre>
+                            <button class="btn btn-small" onclick="copyToClipboard(this)">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Android -->
+                <div class="install-method" id="androidMethod" style="display:none;">
+                    <div class="method-header">
+                        <span class="method-badge recommended">Recommended</span>
+                        <h3>Install Certificate</h3>
+                    </div>
+                    <div class="install-steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div class="step-content">
+                                <p><a href="/assets/paceyspace-ca.crt" class="btn btn-primary" download="paceyspace-ca.crt">📥 Download Certificate</a></p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div class="step-content">
+                                <p>Go to <strong>Settings</strong> → <strong>Security</strong> → <strong>Install from storage</strong> (or <strong>Encryption & credentials</strong> → <strong>Install a certificate</strong>)</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <div class="step-content">
+                                <p>Select the downloaded file and choose <strong>VPN and apps</strong></p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">4</div>
+                            <div class="step-content">
+                                <p>Name it "PaceySpace" and tap <strong>OK</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unknown OS -->
+                <div class="install-method" id="unknownMethod" style="display:none;">
+                    <div class="method-header">
+                        <h3>We couldn't detect your operating system</h3>
+                    </div>
+                    <p>Please select your system below:</p>
+                    <div class="os-selector">
+                        <button class="os-btn" onclick="showMethod('macos')">🍎 macOS</button>
+                        <button class="os-btn" onclick="showMethod('windows')">🪟 Windows</button>
+                        <button class="os-btn" onclick="showMethod('linux')">🐧 Linux</button>
+                        <button class="os-btn" onclick="showMethod('ios')">📱 iOS</button>
+                        <button class="os-btn" onclick="showMethod('android')">🤖 Android</button>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="security-note">
+                        <strong>🔒 Security Note:</strong> This certificate only allows your device to trust our internal services. It does not give access to anything you haven't been explicitly invited to.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Test Your Connection -->
+            <section class="card" id="step2">
+                <div class="card-header">
+                    <div class="step-badge">Step 2</div>
+                    <h2>Test Your Connection</h2>
+                    <p class="card-description">Let's verify everything is working correctly before you access our services.</p>
+                </div>
+
+                <div class="test-suite">
+                    <div class="test-item" id="testTailscale">
+                        <div class="test-status pending">
+                            <div class="test-icon">⏳</div>
+                            <div class="test-info">
+                                <div class="test-name">Tailscale Connection</div>
+                                <div class="test-desc">Checking if you're connected to the PaceySpace network</div>
+                            </div>
+                        </div>
+                        <div class="test-details" style="display:none;">
+                            <div class="detail-row">
+                                <span class="detail-label">Your Tailscale IP:</span>
+                                <span class="detail-value" id="tsIP">Detecting...</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Network Status:</span>
+                                <span class="detail-value" id="tsStatus">Checking...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="test-item" id="testDNS">
+                        <div class="test-status pending">
+                            <div class="test-icon">⏳</div>
+                            <div class="test-info">
+                                <div class="test-name">DNS Resolution</div>
+                                <div class="test-desc">Can your device find our internal services?</div>
+                            </div>
+                        </div>
+                        <div class="test-details" style="display:none;">
+                            <div class="dns-tests">
+                                <div class="dns-test" id="dnsProxy">
+                                    <span class="dns-name">proxy.pspace</span>
+                                    <span class="dns-result">Testing...</span>
+                                </div>
+                                <div class="dns-test" id="dnsNebula">
+                                    <span class="dns-name">nebula.pspace</span>
+                                    <span class="dns-result">Testing...</span>
+                                </div>
+                                <div class="dns-test" id="dnsPublic">
+                                    <span class="dns-name">archive.ubuntu.com</span>
+                                    <span class="dns-result">Testing...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="test-item" id="testHTTPS">
+                        <div class="test-status pending">
+                            <div class="test-icon">⏳</div>
+                            <div class="test-info">
+                                <div class="test-name">HTTPS Certificate</div>
+                                <div class="test-desc">Is your browser trusting our secure connection?</div>
+                            </div>
+                        </div>
+                        <div class="test-details" style="display:none;">
+                            <div class="cert-tests">
+                                <div class="cert-test" id="certProxy">
+                                    <span class="cert-name">https://proxy.pspace</span>
+                                    <span class="cert-result">Testing...</span>
+                                </div>
+                                <div class="cert-test" id="certNebula">
+                                    <span class="cert-name">https://nebula.pspace</span>
+                                    <span class="cert-result">Testing...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-actions">
+                    <button class="btn btn-primary" id="runTestsBtn" onclick="runAllTests()">
+                        <span>🔄 Run All Tests</span>
+                    </button>
+                    <div class="test-summary" id="testSummary" style="display:none;"></div>
+                </div>
+
+                <div class="troubleshooting" id="troubleshooting" style="display:none;">
+                    <h3>🔧 Troubleshooting</h3>
+                    <div class="troubleshoot-content" id="troubleshootContent">
+                        <!-- Dynamic content based on failures -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Email Provisioning -->
+            <section class="card" id="step3">
+                <div class="card-header">
+                    <div class="step-badge">Step 3</div>
+                    <h2>Your PaceySpace Email</h2>
+                    <p class="card-description">Choose your email address and access your mailbox.</p>
+                </div>
+
+                <div class="email-provisioning">
+                    <div class="email-form" id="emailForm">
+                        <div class="form-group">
+                            <label for="emailUsername">Choose your username</label>
+                            <div class="email-input-group">
+                                <input type="text" id="emailUsername" class="form-input" placeholder="firstname.lastname" pattern="[a-z0-9._-]+" required>
+                                <span class="email-domain">@paceyspace.com</span>
+                            </div>
+                            <div class="form-hint">Use lowercase letters, numbers, dots, hyphens, or underscores. No spaces.</div>
+                            <div class="form-validation" id="emailValidation"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailFullName">Your Full Name</label>
+                            <input type="text" id="emailFullName" class="form-input" placeholder="Jane Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailRole">Your Role</label>
+                            <select id="emailRole" class="form-select" required>
+                                <option value="">Select your role...</option>
+                                <option value="developer">Developer / Engineer</option>
+                                <option value="designer">Designer / Creative</option>
+                                <option value="admin">Admin / Operations</option>
+                                <option value="client">Client / External</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailNotes">Notes (optional)</label>
+                            <textarea id="emailNotes" class="form-textarea" placeholder="Any special requirements or requests?"></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="submitEmailBtn" onclick="submitEmailRequest()">
+                            <span>📧 Request Email Address</span>
+                        </button>
+                        <div class="form-status" id="emailStatus"></div>
+                    </div>
+
+                    <div class="email-info" id="emailInfo" style="display:none;">
+                        <div class="info-box success">
+                            <h3>✅ Request Submitted!</h3>
+                            <p>Your email request has been sent to the administrator. You'll receive your credentials within 24 hours.</p>
+                            <div class="email-preview">
+                                <strong>Requested:</strong> <span id="requestedEmail"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="email-access">
+                    <h3>Already have an email?</h3>
+                    <div class="service-grid small">
+                        <a href="https://webmail.pspace" class="service-card" target="_blank">
+                            <div class="service-icon">📧</div>
+                            <div class="service-name">Webmail</div>
+                            <div class="service-desc">Access your inbox</div>
+                        </a>
+                        <a href="https://mail.pspace" class="service-card" target="_blank">
+                            <div class="service-icon">⚙️</div>
+                            <div class="service-name">Mail Admin</div>
+                            <div class="service-desc">Settings & aliases</div>
+                        </a>
+                    </div>
+                    <div class="email-config">
+                        <h4>Mobile & Desktop Setup</h4>
+                        <div class="config-tabs">
+                            <button class="tab-btn active" onclick="showTab('imap')">IMAP</button>
+                            <button class="tab-btn" onclick="showTab('smtp')">SMTP</button>
+                        </div>
+                        <div class="tab-content" id="imapTab">
+                            <div class="config-table">
+                                <div class="config-row"><span>Server:</span><code>mail.paceyspace.com</code></div>
+                                <div class="config-row"><span>Port:</span><code>993</code></div>
+                                <div class="config-row"><span>Security:</span><code>SSL/TLS</code></div>
+                                <div class="config-row"><span>Username:</span><code>yourname@paceyspace.com</code></div>
+                            </div>
+                        </div>
+                        <div class="tab-content" id="smtpTab" style="display:none;">
+                            <div class="config-table">
+                                <div class="config-row"><span>Server:</span><code>mail.paceyspace.com</code></div>
+                                <div class="config-row"><span>Port:</span><code>465</code></div>
+                                <div class="config-row"><span>Security:</span><code>SSL/TLS</code></div>
+                                <div class="config-row"><span>Username:</span><code>yourname@paceyspace.com</code></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Catalog -->
+            <section class="card" id="services">
+                <div class="card-header">
+                    <h2>Your Services</h2>
+                    <p class="card-description">Everything you need, all in one place.</p>
+                </div>
+                <div class="service-grid">
+                    <a href="https://nebula.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">☁️</div>
+                        <div class="service-name">Nebula</div>
+                        <div class="service-desc">Files & Collaboration</div>
+                    </a>
+                    <a href="https://webmail.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">📧</div>
+                        <div class="service-name">Webmail</div>
+                        <div class="service-desc">Email inbox</div>
+                    </a>
+                    <a href="https://engine.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">⚙️</div>
+                        <div class="service-name">Engine</div>
+                        <div class="service-desc">Automation (n8n)</div>
+                    </a>
+                    <a href="https://openwebui.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">🤖</div>
+                        <div class="service-name">AI Chat</div>
+                        <div class="service-desc">OpenWebUI</div>
+                    </a>
+                    <a href="https://yendorcats.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">🐱</div>
+                        <div class="service-name">YendorCats</div>
+                        <div class="service-desc">Main application</div>
+                    </a>
+                    <a href="https://registry.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">📦</div>
+                        <div class="service-name">Registry</div>
+                        <div class="service-desc">Docker images</div>
+                    </a>
+                    <a href="https://dns.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">🔍</div>
+                        <div class="service-name">DNS</div>
+                        <div class="service-desc">AdGuard settings</div>
+                    </a>
+                    <a href="https://proxy.pspace" class="service-card" target="_blank">
+                        <div class="service-icon">🛡️</div>
+                        <div class="service-name">Proxy</div>
+                        <div class="service-desc">Traefik dashboard</div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Help & Support -->
+            <section class="card" id="help">
+                <div class="card-header">
+                    <h2>Need Help?</h2>
+                </div>
+                <div class="help-grid">
+                    <div class="help-item">
+                        <div class="help-icon">📖</div>
+                        <h4>Documentation</h4>
+                        <p>Full guides and how-tos</p>
+                        <a href="https://docs.paceyspace.com" target="_blank">docs.paceyspace.com →</a>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-icon">💬</div>
+                        <h4>Slack</h4>
+                        <p>Ask the team</p>
+                        <a href="#" onclick="alert('Join our Slack workspace via the invite sent to your email')">Join Slack →</a>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-icon">🔧</div>
+                        <h4>Diagnostics</h4>
+                        <p>Run the connection tests above</p>
+                        <a href="#step2" onclick="document.getElementById('step2').scrollIntoView({behavior:'smooth'})">Go to Tests →</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 PaceySpace. All rights reserved.</p>
+            <p class="footer-small">Internal use only. This portal is part of the PaceySpace private network.</p>
+        </footer>
+    </div>
+
+    <script src="/assets/onboarding.js"></script>
+</body>
+</html>
