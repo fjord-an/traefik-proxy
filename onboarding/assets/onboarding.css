@@ -441,3 +441,66 @@ details[open] summary::before{content:'▾'}
   .email-row{flex-direction:column;align-items:stretch}
   .email-domain{margin-top:-4px;padding-left:4px}
 }
+
+/* ── DNS Help (split DNS troubleshooting) ────────────────────────────── */
+.dns-help{
+  margin-top:24px;
+  background:var(--bg-card);
+  border:1px solid var(--bd);
+  border-radius:12px;
+  padding:0;
+  overflow:hidden;
+}
+.dns-help summary{
+  cursor:pointer;
+  padding:16px 20px;
+  font-weight:600;
+  font-size:15px;
+  color:var(--p-dark);
+  list-style:none;
+  user-select:none;
+  transition:background .15s;
+}
+.dns-help summary::-webkit-details-marker{display:none}
+.dns-help summary:hover{background:var(--p-faint)}
+.dns-help summary::before{
+  content:'▶';
+  display:inline-block;
+  margin-right:8px;
+  font-size:11px;
+  transition:transform .2s;
+}
+.dns-help[open] summary::before{transform:rotate(90deg)}
+.dns-help-body{
+  padding:0 20px 20px;
+  font-size:14px;
+  line-height:1.6;
+  color:var(--text);
+}
+.dns-help-body p{margin:10px 0}
+.dns-help-body ol{margin:10px 0;padding-left:24px}
+.dns-help-body li{margin:6px 0}
+.dns-help-body code{
+  background:var(--p-faint);
+  padding:2px 6px;
+  border-radius:4px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  color:var(--p-dark);
+}
+.dns-help-body a{
+  color:var(--p);
+  text-decoration:underline;
+  text-decoration-color:var(--p-light);
+  text-underline-offset:2px;
+}
+.dns-help-body a:hover{text-decoration-color:var(--p)}
+.dns-help-note{
+  background:var(--p-faint);
+  border-left:3px solid var(--p);
+  padding:10px 14px;
+  border-radius:4px;
+  font-size:13px;
+  color:var(--p-dark);
+  margin-top:14px;
+}

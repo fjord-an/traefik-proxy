@@ -77,15 +77,17 @@
           </div>
           <div class="mstep">
             <div class="mstep-num">2</div>
-            <div><p>Open <strong>System Settings → General → Profiles</strong> — you'll see the profile waiting to be installed.</p></div>
+            <div>
+              <p>Open <strong>System Settings → VPN &amp; Device Management</strong> (under the General section). You'll see the profile waiting under <em>"Downloaded Profile"</em>. <strong>You must open it within 8 minutes of downloading</strong> — otherwise it expires.</p>
+            </div>
           </div>
           <div class="mstep">
             <div class="mstep-num">3</div>
-            <div><p>Click <strong>Install</strong> and enter your Mac password. It will show as <em>"PaceySpace Workspace Certificate"</em>.</p></div>
+            <div><p>Double-click the profile, then click <strong>Install</strong> and enter your Mac password. It will show as <em>"PaceySpace Workspace Certificate"</em>.</p></div>
           </div>
           <div class="mstep">
             <div class="mstep-num">4</div>
-            <div><p>Restart your browser, then continue below.</p></div>
+            <div><p>Restart your browser (Chrome / Safari / Firefox — all need a fresh launch), then continue below.</p></div>
           </div>
         </div>
         <div class="alt-method">
@@ -211,6 +213,21 @@
 
       <div id="testResult" style="display:none"></div>
       <div id="testTroubleshoot" style="display:none" class="troubleshoot-box"></div>
+
+      <details class="dns-help" id="dnsHelp">
+        <summary>🌐 DNS not resolving? Click here for help</summary>
+        <div class="dns-help-body">
+          <p>Your Mac is connected to Tailscale, but it needs a <strong>Split DNS rule</strong> in Tailscale's admin console to know that <code>*.pspace</code> domains should be sent to our AdGuard DNS server (not MagicDNS).</p>
+          <p><strong>Ask your admin to add this rule:</strong></p>
+          <ol>
+            <li>Open <a href="https://login.tailscale.com/admin/dns" target="_blank">Tailscale Admin → DNS</a></li>
+            <li>Scroll to <strong>Split DNS</strong></li>
+            <li>Click <strong>Add nameserver</strong> → use domain <code>pspace</code> → nameserver <code>100.121.252.126</code></li>
+            <li>Wait ~30 seconds, then click <strong>Run Tests</strong> again</li>
+          </ol>
+          <p class="dns-help-note">Once added, you'll resolve <code>*.pspace</code> automatically. This is a one-time setup that all colleagues need.</p>
+        </div>
+      </details>
 
       <div class="flow-nav" id="testNav" style="display:none">
         <button class="btn btn-outline" onclick="goScreen('screen-cert')">← Back</button>
