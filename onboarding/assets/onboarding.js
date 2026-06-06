@@ -1,497 +1,403 @@
-// OS Detection
+'use strict';
+
+// ── Config ──────────────────────────────────────────────────────────────
+const BACKEND = '/api'; // proxied via Traefik
+
+// ── State ───────────────────────────────────────────────────────────────
+const state = {
+  os: null,
+  interests: new Set(),
+  experience: { level: null, years: null, background: '', workStyle: null },
+  strengths: new Set(),
+};
+
+// ── Interest categories ──────────────────────────────────────────────────
+const INTEREST_CATEGORIES = [
+  // Creative
+  { icon:'🎨', name:'Graphic Design',     sub:'Visual identity & print',       domain:'creative' },
+  { icon:'✦',  name:'UI/UX Design',       sub:'Interfaces & user experience',  domain:'creative' },
+  { icon:'🎬', name:'Motion Design',      sub:'Animation & video',             domain:'creative' },
+  { icon:'✏️', name:'Illustration',       sub:'Digital & traditional art',     domain:'creative' },
+  { icon:'📸', name:'Photography',        sub:'Visual storytelling',           domain:'creative' },
+  { icon:'🎥', name:'Videography',        sub:'Video production & editing',    domain:'creative' },
+  { icon:'🔤', name:'Typography',         sub:'Type, layout & composition',    domain:'creative' },
+  { icon:'🎭', name:'Art Direction',      sub:'Creative vision & leading',     domain:'creative' },
+  { icon:'🏷️', name:'Branding',          sub:'Identity systems & strategy',   domain:'creative' },
+  { icon:'🧊', name:'3D Design',          sub:'Modelling, VFX & product viz',  domain:'creative' },
+  // Technical
+  { icon:'💻', name:'Software Development',       sub:'Building products & systems',   domain:'technical' },
+  { icon:'🌐', name:'Web Development',            sub:'Frontend & full-stack web',     domain:'technical' },
+  { icon:'📱', name:'Mobile Development',         sub:'iOS, Android & cross-platform', domain:'technical' },
+  { icon:'🖥️', name:'Systems Administration',    sub:'Linux, servers & infrastructure',domain:'technical' },
+  { icon:'🔧', name:'Systems Implementation',    sub:'Deploying & configuring systems',domain:'technical' },
+  { icon:'🐳', name:'DevOps & Infrastructure',   sub:'CI/CD, containers & cloud',     domain:'technical' },
+  { icon:'🔒', name:'Cybersecurity',             sub:'Security, hardening & audits',  domain:'technical' },
+  { icon:'🗄️', name:'Database Administration',   sub:'SQL, NoSQL & data stores',      domain:'technical' },
+  { icon:'🌐', name:'Networking',                sub:'VPN, DNS, routing & protocols', domain:'technical' },
+  { icon:'🤖', name:'AI & Machine Learning',     sub:'Models, pipelines & LLMs',      domain:'technical' },
+  { icon:'📊', name:'Data Engineering',          sub:'Pipelines, ETL & analytics',    domain:'technical' },
+  { icon:'🔬', name:'Quality Assurance',         sub:'Testing, QA & reliability',     domain:'technical' },
+  { icon:'📟', name:'Embedded Systems',          sub:'Hardware, firmware & IoT',      domain:'technical' },
+  // Operational
+  { icon:'📋', name:'Project Management',        sub:'Planning, delivery & oversight',domain:'operational' },
+  { icon:'⚡', name:'Process Optimisation',      sub:'Efficiency & workflow design',  domain:'operational' },
+  { icon:'📖', name:'Documentation',            sub:'Technical writing & runbooks',  domain:'operational' },
+  { icon:'📈', name:'Business Analysis',         sub:'Requirements & process mapping',domain:'operational' },
+  { icon:'🔄', name:'Operations',               sub:'Day-to-day running of systems', domain:'operational' },
+  // Relational
+  { icon:'🎧', name:'Customer Support',         sub:'Helping users resolve issues',  domain:'relational' },
+  { icon:'🤝', name:'Customer Success',         sub:'Retention & relationship mgmt', domain:'relational' },
+  { icon:'💬', name:'Client Relations',         sub:'External stakeholders & comms', domain:'relational' },
+  { icon:'🧭', name:'Consultation',             sub:'Advisory & strategic guidance', domain:'relational' },
+  { icon:'👥', name:'Community Management',     sub:'Online communities & forums',   domain:'relational' },
+  { icon:'🏫', name:'Training & Mentorship',    sub:'Teaching & onboarding',         domain:'relational' },
+  { icon:'🧑‍💼', name:'HR & Recruitment',       sub:'Hiring, culture & people ops',  domain:'relational' },
+  // Strategic
+  { icon:'📣', name:'Marketing',                sub:'Growth, campaigns & channels',  domain:'strategic' },
+  { icon:'✍️', name:'Copywriting',             sub:'Words that persuade & inform',  domain:'strategic' },
+  { icon:'📡', name:'Content Strategy',         sub:'Editorial planning & content ops',domain:'strategic' },
+  { icon:'🧭', name:'Brand Strategy',           sub:'Positioning & market identity', domain:'strategic' },
+  { icon:'🗺️', name:'Business Strategy',        sub:'Big-picture planning & vision', domain:'strategic' },
+  { icon:'🧪', name:'Research',                 sub:'UX, market & competitive intel',domain:'strategic' },
+  { icon:'🎯', name:'Product Management',       sub:'Roadmaps, specs & prioritisation',domain:'strategic' },
+  { icon:'💰', name:'Sales',                    sub:'Pipeline, deals & conversion',  domain:'strategic' },
+];
+
+// Strengths are a focused subset
+const STRENGTH_CHIPS = [
+  'Problem solving','Attention to detail','Fast learner','Creative thinking',
+  'Communication','Leadership','Collaboration','Self-management','Critical thinking',
+  'Systems thinking','Empathy','Adaptability','Resilience','Initiative',
+  'Research skills','Presentation','Written communication','Technical depth',
+  'User empathy','Data literacy','Strategic vision','Facilitation','Coaching',
+  'Conflict resolution','Negotiation','Process design','Documentation',
+  'Pixel-perfect execution','Big picture thinking','Cross-functional work',
+  'Mentorship','Curiosity','Reliability','Speed','Quality focus',
+];
+
+// ── Screen navigation ────────────────────────────────────────────────────
+function goScreen(id) {
+  document.querySelectorAll('.flow-screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (!target) return;
+  target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // When entering profile flow, show that div and hide cert flow
+  if (['screen-profile-intro','screen-interests','screen-experience',
+       'screen-strengths','screen-email','screen-done','screen-services'].includes(id)) {
+    document.getElementById('certFlow').style.display = 'none';
+    document.getElementById('profileFlow').style.display = 'block';
+  } else {
+    document.getElementById('certFlow').style.display = 'block';
+    document.getElementById('profileFlow').style.display = 'none';
+  }
+}
+
+function goProfileStep(step) {
+  const map = {
+    interests:  'screen-interests',
+    experience: 'screen-experience',
+    strengths:  'screen-strengths',
+    email:      'screen-email',
+  };
+  goScreen(map[step] || 'screen-profile-intro');
+}
+
+// ── OS Detection ─────────────────────────────────────────────────────────
 function detectOS() {
-    const userAgent = navigator.userAgent;
-    const platform = navigator.platform;
-    
-    let os = 'unknown';
-    let icon = '💻';
-    let name = 'Unknown System';
-    let version = '';
-    
-    if (/iPhone|iPad|iPod/i.test(userAgent)) {
-        os = 'ios';
-        icon = '📱';
-        name = 'iOS';
-        if (/iPhone/i.test(userAgent)) name = 'iPhone';
-        else if (/iPad/i.test(userAgent)) name = 'iPad';
-        else if (/iPod/i.test(userAgent)) name = 'iPod';
-    } else if (/Android/i.test(userAgent)) {
-        os = 'android';
-        icon = '🤖';
-        name = 'Android';
-    } else if (/Mac/i.test(platform)) {
-        os = 'macos';
-        icon = '🍎';
-        name = 'macOS';
-        if (/Mac OS X 10_15|macOS 10.15/i.test(userAgent)) version = 'Catalina';
-        else if (/Mac OS X 10_14/i.test(userAgent)) version = 'Mojave';
-        else if (/macOS 11/i.test(userAgent)) version = 'Big Sur';
-        else if (/macOS 12/i.test(userAgent)) version = 'Monterey';
-        else if (/macOS 13/i.test(userAgent)) version = 'Ventura';
-        else if (/macOS 14/i.test(userAgent)) version = 'Sonoma';
-    } else if (/Win/i.test(platform)) {
-        os = 'windows';
-        icon = '🪟';
-        name = 'Windows';
-        if (/Windows NT 10.0/i.test(userAgent)) version = '10/11';
-        else if (/Windows NT 6.3/i.test(userAgent)) version = '8.1';
-        else if (/Windows NT 6.2/i.test(userAgent)) version = '8';
-    } else if (/Linux/i.test(platform)) {
-        os = 'linux';
-        icon = '🐧';
-        name = 'Linux';
-        if (/Ubuntu/i.test(userAgent)) version = 'Ubuntu';
-        else if (/Fedora/i.test(userAgent)) version = 'Fedora';
-        else if (/Debian/i.test(userAgent)) version = 'Debian';
-    }
-    
-    return { os, icon, name, version };
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+  if (/Android/i.test(ua))          return 'android';
+  if (/Mac/i.test(navigator.platform)) return 'macos';
+  if (/Win/i.test(navigator.platform)) return 'windows';
+  if (/Linux/i.test(navigator.platform)) return 'linux';
+  return 'unknown';
 }
 
-function showMethod(os) {
-    const methods = ['macos', 'ios', 'windows', 'linux', 'android'];
-    methods.forEach(m => {
-        const el = document.getElementById(m + 'Method');
-        if (el) el.style.display = 'none';
+const OS_META = {
+  macos:   { emoji:'🍎', name:'macOS' },
+  ios:     { emoji:'📱', name:'iPhone / iPad' },
+  windows: { emoji:'🪟', name:'Windows' },
+  linux:   { emoji:'🐧', name:'Linux' },
+  android: { emoji:'🤖', name:'Android' },
+  unknown: { emoji:'💻', name:'Unknown system' },
+};
+
+function selectOS(os) {
+  state.os = os;
+  const meta = OS_META[os] || OS_META.unknown;
+  document.getElementById('osEmoji').textContent = meta.emoji;
+  document.getElementById('osName').textContent  = meta.name;
+  document.getElementById('osVer').textContent   = 'Showing instructions for your system';
+  document.querySelectorAll('.install-method').forEach(m => m.style.display = 'none');
+  const method = document.getElementById('method-' + os);
+  if (method) method.style.display = 'block';
+  toggleOsPicker(false);
+}
+
+function toggleOsPicker(force) {
+  const picker = document.getElementById('osPicker');
+  const show = force !== undefined ? force : picker.style.display === 'none';
+  picker.style.display = show ? 'flex' : 'none';
+}
+
+// ── Test Connection ──────────────────────────────────────────────────────
+async function runTests() {
+  const btn = document.getElementById('runTestsBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Running…';
+
+  let pass = 0, total = 3;
+
+  // 1 — Tailscale (can we reach any .pspace?)
+  const tsOk = await testReach('https://proxy.pspace/dashboard/');
+  setTestRow('tailscale', tsOk, tsOk ? 'Connected' : 'Not reachable');
+  if (tsOk) pass++;
+
+  // 2 — DNS (resolve a second domain to confirm AdGuard is working)
+  const dnsOk = await testReach('https://dns.pspace');
+  setTestRow('dns', dnsOk, dnsOk ? 'Resolving' : 'Not resolving');
+  if (dnsOk) pass++;
+
+  // 3 — HTTPS (same-origin fetch, will fail if cert is untrusted)
+  let httpsOk = false;
+  try {
+    const r = await fetch('https://proxy.pspace/dashboard/', { method:'HEAD', signal: AbortSignal.timeout(5000) });
+    httpsOk = r.status < 600; // any real response = trusted
+  } catch {}
+  setTestRow('https', httpsOk, httpsOk ? 'Certificate trusted' : 'Not trusted — install certificate');
+  if (httpsOk) pass++;
+
+  // Result
+  const res = document.getElementById('testResult');
+  res.style.display = 'block';
+  const nav = document.getElementById('testNav');
+  const tb  = document.getElementById('testTroubleshoot');
+
+  if (pass === total) {
+    res.className = 'pass';
+    res.textContent = '✅ All tests passed — you\'re good to go!';
+    tb.style.display = 'none';
+    nav.style.display = 'flex';
+  } else {
+    res.className = 'fail';
+    res.textContent = `⚠️ ${total - pass} test${total - pass > 1 ? 's' : ''} failed — see troubleshooting below.`;
+    nav.style.display = 'flex'; // allow skip
+
+    tb.style.display = 'block';
+    const tips = [];
+    if (!tsOk) tips.push('<li><strong>Tailscale not connected:</strong> Open the Tailscale app and make sure you\'re signed in to the PaceySpace network.</li>');
+    if (!dnsOk) tips.push('<li><strong>DNS not resolving:</strong> In the Tailscale app, open <em>DNS</em> settings and confirm <em>"Use Tailscale DNS Settings"</em> is enabled.</li>');
+    if (!httpsOk) tips.push('<li><strong>Certificate not trusted:</strong> Go back to Step 1 and complete the certificate installation for your OS. Restart your browser after installing.</li>');
+    tb.innerHTML = `<h3>🔧 Troubleshooting</h3><ul>${tips.join('')}</ul>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '↺ Re-run';
+}
+
+async function testReach(url) {
+  try {
+    await fetch(url, { method:'HEAD', mode:'no-cors', signal: AbortSignal.timeout(5000) });
+    return true;
+  } catch { return false; }
+}
+
+function setTestRow(id, ok, label) {
+  const row = document.getElementById('tr-' + id);
+  const ind = document.getElementById('ti-' + id);
+  const bdg = document.getElementById('tb-' + id);
+  if (!row) return;
+  row.classList.toggle('pass', ok);
+  row.classList.toggle('fail', !ok);
+  ind.textContent = ok ? '✅' : '❌';
+  bdg.textContent = label;
+}
+
+// ── Interest grid ────────────────────────────────────────────────────────
+function buildInterestGrid() {
+  const grid = document.getElementById('interestGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  INTEREST_CATEGORIES.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'int-category';
+    el.dataset.name = item.name;
+    el.innerHTML = `
+      <div class="int-check">✓</div>
+      <div class="int-remove">✕</div>
+      <div class="int-icon">${item.icon}</div>
+      <div class="int-name">${item.name}</div>
+      <div class="int-sub">${item.sub}</div>
+    `;
+    el.addEventListener('click', () => toggleInterest(el, item.name));
+    grid.appendChild(el);
+  });
+}
+
+function toggleInterest(el, name) {
+  if (state.interests.has(name)) {
+    state.interests.delete(name);
+    el.classList.remove('selected');
+  } else {
+    state.interests.add(name);
+    el.classList.add('selected');
+  }
+  const n = state.interests.size;
+  document.getElementById('interestCount').textContent = n;
+  const btn = document.getElementById('interestNext');
+  if (btn) btn.disabled = n === 0;
+}
+
+// ── Strength chips ───────────────────────────────────────────────────────
+function buildStrengthGrid() {
+  const grid = document.getElementById('strengthGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  STRENGTH_CHIPS.forEach(name => {
+    const el = document.createElement('div');
+    el.className = 'str-chip';
+    el.innerHTML = `${name} <span class="str-x">✕</span>`;
+    el.addEventListener('click', () => toggleStrength(el, name));
+    grid.appendChild(el);
+  });
+}
+
+function toggleStrength(el, name) {
+  const maxed = state.strengths.size >= 10 && !state.strengths.has(name);
+  if (maxed) { el.style.opacity = '.4'; setTimeout(() => { el.style.opacity=''; }, 600); return; }
+  if (state.strengths.has(name)) {
+    state.strengths.delete(name);
+    el.classList.remove('selected');
+  } else {
+    state.strengths.add(name);
+    el.classList.add('selected');
+  }
+  document.getElementById('strengthCount').textContent = state.strengths.size;
+}
+
+// ── Experience pickers ───────────────────────────────────────────────────
+function selectLevel(btn) {
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.experience.level = btn.dataset.level;
+}
+
+function selectYears(btn) {
+  document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.experience.years = btn.dataset.years;
+}
+
+// ── Email username validation ────────────────────────────────────────────
+function validateUsername() {
+  const input = document.getElementById('fieldEmailUsername');
+  const val   = document.getElementById('usernameValidation');
+  if (!input || !val) return true;
+  const v = input.value;
+  if (!v) { val.className = 'field-validation'; val.textContent = ''; return false; }
+  const ok = /^[a-z0-9._-]+$/.test(v);
+  val.className = 'field-validation ' + (ok ? 'ok' : 'err');
+  val.textContent = ok ? '✓ Looks good — ' + v + '@paceyspace.com' : '✕ Only lowercase letters, numbers, dots, hyphens, underscores';
+  return ok;
+}
+
+// ── Submit profile ───────────────────────────────────────────────────────
+async function submitProfile() {
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('submitStatus');
+
+  const fullName     = document.getElementById('fieldFullName')?.value.trim();
+  const displayName  = (document.getElementById('fieldDisplayName')?.value.trim()) || fullName;
+  const emailUsername= document.getElementById('fieldEmailUsername')?.value.trim().toLowerCase();
+  const role         = document.getElementById('fieldRole')?.value;
+  const personalEmail= document.getElementById('fieldPersonalEmail')?.value.trim();
+  const notes        = document.getElementById('fieldNotes')?.value.trim();
+  const workStyle    = document.querySelector('input[name="workStyle"]:checked')?.value || null;
+  const background   = document.getElementById('expBackground')?.value.trim();
+  const strengthNotes= document.getElementById('strengthNotes')?.value.trim();
+
+  if (!fullName)      return showStatus(status, 'err', '⚠ Full name is required.');
+  if (!emailUsername) return showStatus(status, 'err', '⚠ Email username is required.');
+  if (!validateUsername()) return showStatus(status, 'err', '⚠ Please fix the email username.');
+  if (!role)          return showStatus(status, 'err', '⚠ Please select your role.');
+
+  state.experience.background = background || '';
+  state.experience.workStyle  = workStyle;
+
+  const payload = {
+    fullName,
+    displayName,
+    emailUsername,
+    role,
+    personalEmail,
+    notes: [notes, strengthNotes].filter(Boolean).join('\n\n'),
+    interests: [...state.interests],
+    experience: state.experience,
+    strengths: [...state.strengths],
+  };
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Submitting…';
+  status.style.display = 'none';
+
+  try {
+    const res = await fetch(BACKEND + '/submit-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(15000),
     });
-    
-    const target = document.getElementById(os + 'Method');
-    if (target) {
-        target.style.display = 'block';
-        target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    
-    const unknown = document.getElementById('unknownMethod');
-    if (unknown) unknown.style.display = 'none';
-}
+    const data = await res.json();
 
-// Initialize OS detection
-function initOSDetection() {
-    const detected = detectOS();
-    const osIcon = document.getElementById('osIcon');
-    const osName = document.getElementById('osName');
-    const osVersion = document.getElementById('osVersion');
-    
-    if (osIcon) osIcon.textContent = detected.icon;
-    if (osName) osName.textContent = detected.name + (detected.version ? ' ' + detected.version : '');
-    if (osVersion) osVersion.textContent = 'We\'ve prepared instructions for your system';
-    
-    showMethod(detected.os);
-}
-
-// Copy to clipboard
-function copyToClipboard(button) {
-    const codeBlock = button.parentElement.querySelector('pre');
-    if (codeBlock) {
-        const text = codeBlock.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            const original = button.textContent;
-            button.textContent = '✓ Copied!';
-            setTimeout(() => {
-                button.textContent = original;
-            }, 2000);
-        });
-    }
-}
-
-// Toggle alternative methods
-function toggleAlternative(id) {
-    const el = document.getElementById(id);
-    if (el) {
-        el.style.display = el.style.display === 'none' ? 'block' : 'none';
-    }
-}
-
-// Test Suite
-async function runAllTests() {
-    const btn = document.getElementById('runTestsBtn');
-    const summary = document.getElementById('testSummary');
-    const troubleshoot = document.getElementById('troubleshooting');
-    const troubleshootContent = document.getElementById('troubleshootContent');
-    
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Running tests...</span>';
-    }
-    
-    let allPassed = true;
-    const failures = [];
-    
-    // Test 1: Tailscale Connection
-    await testTailscaleConnection();
-    
-    // Test 2: DNS Resolution
-    await testDNSResolution();
-    
-    // Test 3: HTTPS Certificate
-    await testHTTPSCertificate();
-    
-    // Check results
-    const tests = document.querySelectorAll('.test-item');
-    tests.forEach(test => {
-        const status = test.querySelector('.test-status');
-        if (status.classList.contains('error')) {
-            allPassed = false;
-            const testName = test.querySelector('.test-name').textContent;
-            failures.push(testName);
-        }
-    });
-    
-    if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '<span>🔄 Re-run Tests</span>';
-    }
-    
-    if (summary) {
-        summary.style.display = 'block';
-        if (allPassed) {
-            summary.className = 'test-summary all-pass';
-            summary.innerHTML = '✅ All tests passed! You\'re ready to access PaceySpace services.';
-        } else {
-            summary.className = 'test-summary has-failures';
-            summary.innerHTML = `⚠️ Some tests failed. Check the troubleshooting section below.`;
-        }
-    }
-    
-    if (troubleshoot && troubleshootContent) {
-        if (!allPassed) {
-            troubleshoot.style.display = 'block';
-            let html = '<p>Here are the issues we found and how to fix them:</p><ul>';
-            
-            if (failures.includes('Tailscale Connection')) {
-                html += '<li><strong>Tailscale not connected:</strong> Make sure the Tailscale app is running and you\'re logged in. Try restarting the app.</li>';
-            }
-            if (failures.includes('DNS Resolution')) {
-                html += '<li><strong>DNS not working:</strong> Make sure "Use Tailscale DNS" is enabled in the Tailscale app settings. Check that your device is using the Tailscale nameserver (100.100.100.100).</li>';
-            }
-            if (failures.includes('HTTPS Certificate')) {
-                html += '<li><strong>Certificate not trusted:</strong> Go back to Step 1 and install the workspace certificate. Make sure you completed all steps for your operating system.</li>';
-            }
-            
-            html += '</ul><p>If you still have issues, contact the team on Slack or check the documentation.</p>';
-            troubleshootContent.innerHTML = html;
-        } else {
-            troubleshoot.style.display = 'none';
-        }
-    }
-    
-    // Scroll to summary
-    if (summary) {
-        summary.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-}
-
-async function testTailscaleConnection() {
-    const testItem = document.getElementById('testTailscale');
-    const status = testItem.querySelector('.test-status');
-    const details = testItem.querySelector('.test-details');
-    const tsIP = document.getElementById('tsIP');
-    const tsStatus = document.getElementById('tsStatus');
-    
-    status.className = 'test-status pending';
-    status.querySelector('.test-icon').textContent = '⏳';
-    
-    // Try to detect Tailscale IP via fetch to a known internal endpoint
-    // Since we can't directly query Tailscale, we'll check if we can resolve .pspace domains
-    try {
-        const start = Date.now();
-        const response = await fetch('https://proxy.pspace/dashboard/', {
-            method: 'HEAD',
-            mode: 'no-cors',
-            cache: 'no-cache',
-            signal: AbortSignal.timeout(5000)
-        });
-        const elapsed = Date.now() - start;
-        
-        // If we got here, we at least resolved the DNS
-        status.className = 'test-status success';
-        status.querySelector('.test-icon').textContent = '✅';
-        
-        if (tsIP) tsIP.textContent = 'Connected (Tailscale network reachable)';
-        if (tsStatus) tsStatus.textContent = '✅ Connected in ' + elapsed + 'ms';
-        
-    } catch (error) {
-        // Try alternative: check if we can reach any .pspace domain
-        try {
-            await fetch('https://nebula.pspace', {
-                method: 'HEAD',
-                mode: 'no-cors',
-                signal: AbortSignal.timeout(3000)
-            });
-            
-            status.className = 'test-status success';
-            status.querySelector('.test-icon').textContent = '✅';
-            
-            if (tsIP) tsIP.textContent = 'Connected';
-            if (tsStatus) tsStatus.textContent = '✅ Network reachable';
-        } catch (e2) {
-            status.className = 'test-status error';
-            status.querySelector('.test-icon').textContent = '❌';
-            
-            if (tsIP) tsIP.textContent = 'Not detected';
-            if (tsStatus) tsStatus.textContent = '❌ Cannot reach Tailscale network';
-        }
-    }
-    
-    if (details) details.style.display = 'block';
-}
-
-async function testDNSResolution() {
-    const testItem = document.getElementById('testDNS');
-    const status = testItem.querySelector('.test-status');
-    const details = testItem.querySelector('.test-details');
-    
-    status.className = 'test-status pending';
-    status.querySelector('.test-icon').textContent = '⏳';
-    
-    const tests = [
-        { id: 'dnsProxy', name: 'proxy.pspace', url: 'https://proxy.pspace' },
-        { id: 'dnsNebula', name: 'nebula.pspace', url: 'https://nebula.pspace' },
-        { id: 'dnsPublic', name: 'archive.ubuntu.com', url: 'https://archive.ubuntu.com' }
-    ];
-    
-    let allResolved = true;
-    
-    for (const test of tests) {
-        const el = document.getElementById(test.id);
-        if (el) {
-            const result = el.querySelector('.dns-result');
-            if (result) result.textContent = 'Testing...';
-        }
-    }
-    
-    for (const test of tests) {
-        const el = document.getElementById(test.id);
-        if (el) {
-            const result = el.querySelector('.dns-result');
-            try {
-                await fetch(test.url, {
-                    method: 'HEAD',
-                    mode: 'no-cors',
-                    signal: AbortSignal.timeout(5000)
-                });
-                
-                if (result) {
-                    result.textContent = '✅ Resolved';
-                    result.style.background = 'var(--success-light)';
-                    result.style.color = 'var(--success)';
-                }
-                el.classList.add('success');
-            } catch (error) {
-                if (result) {
-                    result.textContent = '❌ Failed';
-                    result.style.background = 'var(--error-light)';
-                    result.style.color = 'var(--error)';
-                }
-                el.classList.add('error');
-                allResolved = false;
-            }
-        }
-    }
-    
-    if (allResolved) {
-        status.className = 'test-status success';
-        status.querySelector('.test-icon').textContent = '✅';
+    if (data.success) {
+      document.getElementById('confirmedEmail').textContent = emailUsername + '@paceyspace.com';
+      goScreen('screen-done');
     } else {
-        status.className = 'test-status error';
-        status.querySelector('.test-icon').textContent = '❌';
+      showStatus(status, 'err', '⚠ ' + (data.error || 'Submission failed. Please try again.'));
     }
-    
-    if (details) details.style.display = 'block';
+  } catch (e) {
+    showStatus(status, 'err', '⚠ Could not reach the server. Please try again or contact the admin.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Profile →';
+  }
 }
 
-async function testHTTPSCertificate() {
-    const testItem = document.getElementById('testHTTPS');
-    const status = testItem.querySelector('.test-status');
-    const details = testItem.querySelector('.test-details');
-    
-    status.className = 'test-status pending';
-    status.querySelector('.test-icon').textContent = '⏳';
-    
-    const tests = [
-        { id: 'certProxy', name: 'proxy.pspace', url: 'https://proxy.pspace/dashboard/' },
-        { id: 'certNebula', name: 'nebula.pspace', url: 'https://nebula.pspace' }
-    ];
-    
-    let allTrusted = true;
-    
-    for (const test of tests) {
-        const el = document.getElementById(test.id);
-        if (el) {
-            const result = el.querySelector('.cert-result');
-            if (result) result.textContent = 'Testing...';
-        }
-    }
-    
-    for (const test of tests) {
-        const el = document.getElementById(test.id);
-        if (el) {
-            const result = el.querySelector('.cert-result');
-            try {
-                // Try to fetch with full CORS - this will fail if cert is untrusted
-                const response = await fetch(test.url, {
-                    method: 'HEAD',
-                    signal: AbortSignal.timeout(5000)
-                });
-                
-                if (response.ok || response.status === 405 || response.status === 401) {
-                    if (result) {
-                        result.textContent = '✅ Trusted';
-                        result.style.background = 'var(--success-light)';
-                        result.style.color = 'var(--success)';
-                    }
-                    el.classList.add('success');
-                } else {
-                    throw new Error('Unexpected status: ' + response.status);
-                }
-            } catch (error) {
-                // If it's a TypeError about failed to fetch, it's likely cert issue
-                if (error.name === 'TypeError' || error.message.includes('Failed to fetch')) {
-                    if (result) {
-                        result.textContent = '❌ Not Trusted';
-                        result.style.background = 'var(--error-light)';
-                        result.style.color = 'var(--error)';
-                    }
-                    el.classList.add('error');
-                    allTrusted = false;
-                } else {
-                    // Network error, might be DNS
-                    if (result) {
-                        result.textContent = '⚠️ Network Error';
-                        result.style.background = 'var(--warning-light)';
-                        result.style.color = 'var(--warning)';
-                    }
-                    el.classList.add('error');
-                    allTrusted = false;
-                }
-            }
-        }
-    }
-    
-    if (allTrusted) {
-        status.className = 'test-status success';
-        status.querySelector('.test-icon').textContent = '✅';
-    } else {
-        status.className = 'test-status error';
-        status.querySelector('.test-icon').textContent = '❌';
-    }
-    
-    if (details) details.style.display = 'block';
+function showStatus(el, type, msg) {
+  el.className = type;
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
-// Email Form
-function validateEmail() {
-    const input = document.getElementById('emailUsername');
-    const validation = document.getElementById('emailValidation');
-    const value = input.value;
-    
-    if (!value) {
-        validation.className = 'form-validation';
-        validation.textContent = '';
-        return false;
-    }
-    
-    const valid = /^[a-z0-9._-]+$/.test(value);
-    
-    if (valid) {
-        validation.className = 'form-validation valid';
-        validation.textContent = '✅ Looks good!';
-        return true;
-    } else {
-        validation.className = 'form-validation invalid';
-        validation.textContent = '❌ Only lowercase letters, numbers, dots, hyphens, and underscores allowed';
-        return false;
-    }
+// ── Clipboard ────────────────────────────────────────────────────────────
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  });
 }
 
-function submitEmailRequest() {
-    const username = document.getElementById('emailUsername').value;
-    const fullName = document.getElementById('emailFullName').value;
-    const role = document.getElementById('emailRole').value;
-    const notes = document.getElementById('emailNotes').value;
-    const status = document.getElementById('emailStatus');
-    const form = document.getElementById('emailForm');
-    const info = document.getElementById('emailInfo');
-    
-    if (!username || !fullName || !role) {
-        if (status) {
-            status.className = 'form-status error';
-            status.textContent = 'Please fill in all required fields.';
-        }
-        return;
-    }
-    
-    if (!validateEmail()) {
-        if (status) {
-            status.className = 'form-status error';
-            status.textContent = 'Please fix the username format.';
-        }
-        return;
-    }
-    
-    // Store request locally (since we don't have a backend yet)
-    const request = {
-        username: username,
-        fullName: fullName,
-        role: role,
-        notes: notes,
-        timestamp: new Date().toISOString(),
-        status: 'pending'
-    };
-    
-    // Store in localStorage
-    let requests = JSON.parse(localStorage.getItem('paceyspace_email_requests') || '[]');
-    requests.push(request);
-    localStorage.setItem('paceyspace_email_requests', JSON.stringify(requests));
-    
-    // Show success
-    if (form) form.style.display = 'none';
-    if (info) {
-        info.style.display = 'block';
-        const requestedEmail = document.getElementById('requestedEmail');
-        if (requestedEmail) requestedEmail.textContent = username + '@paceyspace.com';
-    }
-    
-    // Also try to send to a notification endpoint if available
-    // For now, we'll just log it
-    console.log('Email request submitted:', request);
-}
+// ── Init ─────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // OS detection
+  const detected = detectOS();
+  selectOS(detected);
 
-// Tab switching
-function showTab(tab) {
-    const tabs = ['imap', 'smtp'];
-    tabs.forEach(t => {
-        const content = document.getElementById(t + 'Tab');
-        if (content) content.style.display = 'none';
-        
-        const btn = document.querySelector('.tab-btn[onclick="showTab(\'' + t + '\')"]');
-        if (btn) btn.classList.remove('active');
+  // Build grids
+  buildInterestGrid();
+  buildStrengthGrid();
+
+  // Work style radio cards
+  document.querySelectorAll('.style-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.style-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      card.querySelector('input').checked = true;
     });
-    
-    const activeContent = document.getElementById(tab + 'Tab');
-    if (activeContent) activeContent.style.display = 'block';
-    
-    const activeBtn = document.querySelector('.tab-btn[onclick="showTab(\'' + tab + '\')"]');
-    if (activeBtn) activeBtn.classList.add('active');
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', function() {
-    initOSDetection();
-    
-    // Set up email validation
-    const emailInput = document.getElementById('emailUsername');
-    if (emailInput) {
-        emailInput.addEventListener('input', validateEmail);
-    }
-    
-    // Make test items clickable to expand
-    document.querySelectorAll('.test-status').forEach(el => {
-        el.addEventListener('click', function() {
-            const details = this.parentElement.querySelector('.test-details');
-            if (details) {
-                details.style.display = details.style.display === 'none' ? 'block' : 'none';
-            }
-        });
-    });
+  });
 });

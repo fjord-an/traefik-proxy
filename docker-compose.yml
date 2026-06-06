@@ -27,5 +27,10 @@ services:
     command: python -m http.server 8082
     volumes:
       - /etc/traefik/onboarding:/usr/share/nginx/html:ro
-    labels:
-      - "traefik.enable=false"
+
+  onboarding-backend:
+    build: /etc/traefik/onboarding-backend
+    container_name: onboarding-backend
+    restart: unless-stopped
+    network_mode: host
+    env_file: /etc/traefik/onboarding-backend/.env
