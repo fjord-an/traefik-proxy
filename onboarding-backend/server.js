@@ -54,7 +54,7 @@ const profileValidators = [
   body('strengths').isArray({ max: 20 }),
 ];
 
-app.post('/api/submit-profile', profileValidators, async (req, res) => {
+app.post('/submit-profile', profileValidators, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ error: 'Validation failed', details: errors.array() });
