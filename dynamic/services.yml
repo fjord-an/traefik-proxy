@@ -1,0 +1,125 @@
+http:
+  routers:
+    yendorcats:
+      rule: Host(`yendorcats.pspace`)
+      service: yendorcats
+      entryPoints:
+      - websecure
+      tls: {}
+    openwebui:
+      rule: Host(`openwebui.pspace`)
+      service: openwebui
+      entryPoints:
+      - websecure
+      tls: {}
+    registry:
+      rule: Host(`registry.pspace`)
+      service: registry
+      entryPoints:
+      - websecure
+      tls: {}
+    engine:
+      rule: Host(`engine.pspace`)
+      service: engine
+      entryPoints:
+      - websecure
+      tls: {}
+    nebula:
+      rule: Host(`nebula.pspace`)
+      service: nebula
+      entryPoints:
+      - websecure
+      tls: {}
+    enhance-cp:
+      rule: Host(`enhance-cp.pspace`)
+      service: enhance-cp
+      entryPoints:
+      - websecure
+      tls: {}
+    mail:
+      rule: Host(`mail.pspace`)
+      service: mail
+      entryPoints:
+      - websecure
+      tls: {}
+    webmail:
+      rule: Host(`webmail.pspace`)
+      service: webmail
+      entryPoints:
+      - websecure
+      tls: {}
+    proxmox-sirius:
+      rule: Host(`proxmox-sirius.pspace`)
+      service: proxmox-sirius
+      entryPoints:
+      - websecure
+      tls: {}
+    proxmox-orion:
+      rule: Host(`proxmox-orion.pspace`)
+      service: proxmox-orion
+      entryPoints:
+      - websecure
+      tls: {}
+    dns:
+      rule: Host(`dns.pspace`)
+      service: dns
+      entryPoints:
+      - websecure
+      tls: {}
+    dashboard:
+      rule: Host(`proxy.pspace`)
+      service: api@internal
+      entryPoints:
+      - websecure
+      tls: {}
+  services:
+    yendorcats:
+      loadBalancer:
+        servers:
+        - url: http://192.168.0.150:30080
+    openwebui:
+      loadBalancer:
+        servers:
+        - url: http://192.168.0.150:30030
+    registry:
+      loadBalancer:
+        servers:
+        - url: http://192.168.0.150:30500
+    engine:
+      loadBalancer:
+        servers:
+        - url: http://100.76.111.24:5678
+    nebula:
+      loadBalancer:
+        servers:
+        - url: http://100.76.111.24:80
+    enhance-cp:
+      loadBalancer:
+        servers:
+        - url: https://100.94.214.49:2087
+        serversTransport: insecure
+    mail:
+      loadBalancer:
+        servers:
+        - url: http://100.77.196.43:8080
+    webmail:
+      loadBalancer:
+        servers:
+        - url: http://100.77.196.43:8081
+    proxmox-sirius:
+      loadBalancer:
+        servers:
+        - url: https://192.168.0.133:8006
+        serversTransport: insecure
+    proxmox-orion:
+      loadBalancer:
+        servers:
+        - url: https://192.168.0.92:8006
+        serversTransport: insecure
+    dns:
+      loadBalancer:
+        servers:
+        - url: http://192.168.0.250:3000
+  serversTransports:
+    insecure:
+      insecureSkipVerify: true
