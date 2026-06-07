@@ -166,3 +166,10 @@ http:
   serversTransports:
     insecure:
       insecureSkipVerify: true
+
+tls:
+  certificates:
+    - certFile: /etc/traefik/certs/onboarding.paceyspace.com.crt
+      keyFile: /etc/traefik/certs/onboarding.paceyspace.com.key
+      stores:
+        - default
