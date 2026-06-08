@@ -72,41 +72,6 @@ http:
       entryPoints:
       - websecure
       tls: {}
-    onboarding:
-      rule: Host(`onboarding.pspace`) && !PathPrefix(`/api`)
-      service: onboarding
-      entryPoints:
-      - websecure
-      tls: {}
-    onboarding-api:
-      rule: Host(`onboarding.pspace`) && PathPrefix(`/api`)
-      service: onboarding-backend
-      middlewares:
-      - strip-api-prefix
-      entryPoints:
-      - websecure
-      tls: {}
-    onboarding-paceyspace:
-      rule: Host(`onboarding.paceyspace.com`) && !PathPrefix(`/api`)
-      service: onboarding
-      entryPoints:
-      - websecure
-      tls: {}
-    onboarding-paceyspace-api:
-      rule: Host(`onboarding.paceyspace.com`) && PathPrefix(`/api`)
-      service: onboarding-backend
-      middlewares:
-      - strip-api-prefix
-      entryPoints:
-      - websecure
-      tls: {}
-
-  middlewares:
-    strip-api-prefix:
-      stripPrefix:
-        prefixes:
-          - /api
-
   services:
     yendorcats:
       loadBalancer:
@@ -115,7 +80,7 @@ http:
     openwebui:
       loadBalancer:
         servers:
-        - url: http://192.168.0.150:30030
+        - url: http://100.119.110.54:3000
     registry:
       loadBalancer:
         servers:
@@ -127,7 +92,7 @@ http:
     nebula:
       loadBalancer:
         servers:
-        - url: http://192.168.0.200:80
+        - url: http://100.76.111.24:80
     enhance-cp:
       loadBalancer:
         servers:
@@ -136,11 +101,11 @@ http:
     mail:
       loadBalancer:
         servers:
-        - url: http://192.168.0.33:8080
+        - url: http://100.77.196.43:8080
     webmail:
       loadBalancer:
         servers:
-        - url: http://192.168.0.33:8081
+        - url: http://100.77.196.43:8081
     proxmox-sirius:
       loadBalancer:
         servers:
@@ -155,21 +120,6 @@ http:
       loadBalancer:
         servers:
         - url: http://192.168.0.250:3000
-    onboarding:
-      loadBalancer:
-        servers:
-        - url: http://localhost:8082
-    onboarding-backend:
-      loadBalancer:
-        servers:
-        - url: http://localhost:8083
   serversTransports:
     insecure:
       insecureSkipVerify: true
-
-tls:
-  certificates:
-    - certFile: /etc/traefik/certs/onboarding.paceyspace.com.crt
-      keyFile: /etc/traefik/certs/onboarding.paceyspace.com.key
-      stores:
-        - default
