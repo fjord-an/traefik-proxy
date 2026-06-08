@@ -43,43 +43,6 @@ All `.pspace` names answer the **Traefik Tailscale IP**. Traefik inspects the `H
 | `proxmox-orion.pspace` | `192.168.0.92:8006` | HTTPS | Proxmox UI (skip verify) |
 | `dns.pspace` | `192.168.0.250:3000` | HTTP | AdGuard UI |
 | `proxy.pspace` | `192.168.0.251:8080` | HTTP | This dashboard |
-| `onboarding.pspace` | `192.168.0.251:8082` | HTTP | Onboarding portal |
-
----
-
-## Onboarding Portal
-
-### For New Colleagues
-
-New team members should visit `https://onboarding.pspace` to set up their device.
-
-**What it does:**
-- Auto-detects the user's operating system (macOS, Windows, Linux, iOS, Android)
-- Provides one-click certificate installation via `.mobileconfig` (Apple), PowerShell (Windows), or Bash (Linux)
-- Runs connection tests to verify DNS, Tailscale, and HTTPS certificate trust
-- Includes email provisioning request form
-- Shows a catalog of all available `.pspace` services
-
-### Certificate Installation
-
-| OS | Method | File |
-|---|---|---|
-| **macOS** | `.mobileconfig` profile | `paceyspace-ca.mobileconfig` |
-| **iOS** | `.mobileconfig` profile | `paceyspace-ca.mobileconfig` |
-| **Windows** | PowerShell one-liner | `install-windows.ps1` |
-| **Linux** | Bash one-liner | `install-linux.sh` |
-| **Android** | Manual `.crt` install | `paceyspace-ca.crt` |
-
-### Files
-
-All onboarding files are served from `/etc/traefik/onboarding/`:
-- `index.html` — Main portal page
-- `assets/onboarding.css` — Styles
-- `assets/onboarding.js` — OS detection, test suite, email form
-- `assets/paceyspace-ca.crt` — Internal CA certificate
-- `assets/paceyspace-ca.mobileconfig` — Apple Configuration Profile
-- `assets/install-windows.ps1` — Windows install script
-- `assets/install-linux.sh` — Linux install script
 
 ---
 

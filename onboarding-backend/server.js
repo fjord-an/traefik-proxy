@@ -13,8 +13,8 @@ const PORT = process.env.PORT || 8083;
 const SMTP_HOST   = process.env.SMTP_HOST   || 'mail.paceyspace.com';
 const SMTP_PORT   = parseInt(process.env.SMTP_PORT || '465', 10);
 const SMTP_SECURE = process.env.SMTP_SECURE !== 'false'; // default true
-const SMTP_USER   = process.env.SMTP_USER   || 'noreply@paceyspace.com';
-const SMTP_PASS   = process.env.SMTP_PASS   || '';
+const SMTP_USER   = process.env.ONBOARDING_STMP_EMAIL || process.env.SMTP_USER   || 'no-reply@paceyspace.com';
+const SMTP_PASS   = process.env.ONBOARDING_STMP_PASSWORD || process.env.SMTP_PASS   || '';
 const NOTIFY_TO   = process.env.NOTIFY_TO   || 'jordan@paceyspace.com';
 const FROM_ADDR   = `"PaceySpace Onboarding" <${SMTP_USER}>`;
 
